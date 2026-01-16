@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singapore Airlines HighFlyer: Retroactive Credits Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom font import for a professional look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6; /* Fallback */
+            /* Palette: Deep Ocean & Vibrant Coral */
+            --primary: #0f172a;
+            --secondary: #0ea5e9;
+            --accent: #f43f5e;
+            --success: #10b981;
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .gradient-bg {
+            background: var(--bg-gradient);
+        }
+
+        /* Chart Container Styling - Mandatory per instructions */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Flowchart Connector Styles (NO SVG used) */
+        .flow-line-vertical {
+            width: 2px;
+            background-color: #94a3b8;
+            height: 24px;
+            margin: 0 auto;
+        }
+
+        .flow-line-horizontal {
+            height: 2px;
+            background-color: #94a3b8;
+            width: 100%;
+            margin-top: 12px;
+        }
+        
+        .arrow-down::after {
+            content: '▼';
+            display: block;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            line-height: 10px;
+        }
+
+        /* Card Hover Effects */
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Palette Selection: Vibrant Blue/Cyan/Pink */
+        /* Palette Name: "Electric Corporate" */
+    </style>
+</head>
+<body class="text-slate-800 gradient-bg min-h-screen">
+
+    <!-- Header Section -->
+    <header class="bg-[#0f172a] text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-[#0ea5e9]">HighFlyer<span class="text-white">Audit</span></h1>
+                <p class="text-xs text-slate-400 uppercase tracking-widest">Corporate Travel Research</p>
+            </div>
+            <div class="hidden md:block text-sm font-light text-slate-300">
+                Subject: Retroactive Booking Credits
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+
+        <!-- Introduction & Plan -->
+        <section class="max-w-4xl mx-auto text-center space-y-4">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">
+                Can you credit <span class="text-[#f43f5e]">past bookings</span> to HighFlyer?
+            </h2>
+            <p class="text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
+                Businesses often join Singapore Airlines' HighFlyer programme and immediately ask: "Can we claim points for the flights we already booked?" The answer is nuanced and depends entirely on the <strong>Ticket Issuance Date</strong> relative to your <strong>Account Registration Date</strong>.
+            </p>
+        </section>
+
+        <!-- Section 1: The Verdict (Goal: Inform) -->
+        <!-- Visual: Big Number/Status Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl shadow-md p-8 border-l-8 border-[#f43f5e] hover-lift">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">The Short Answer</h3>
+                        <div class="text-5xl font-extrabold text-[#f43f5e] mb-4">NO</div>
+                        <p class="text-slate-600 font-medium">If the booking was made <strong>BEFORE</strong> the company registered.</p>
+                    </div>
+                    <div class="text-4xl">🚫</div>
+                </div>
+                <div class="mt-6 text-sm text-slate-500 bg-slate-50 p-4 rounded-lg">
+                    <strong>Why?</strong> HighFlyer T&Cs strictly state that tickets must be issued <em>on or after</em> the date of account activation.
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-8 border-l-8 border-[#10b981] hover-lift">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">The Short Answer</h3>
+                        <div class="text-5xl font-extrabold text-[#10b981] mb-4">YES</div>
+                        <p class="text-slate-600 font-medium">If the booking was made <strong>AFTER</strong> registration, but the ID was missing.</p>
+                    </div>
+                    <div class="text-4xl">✅</div>
+                </div>
+                <div class="mt-6 text-sm text-slate-500 bg-slate-50 p-4 rounded-lg">
+                    <strong>Condition:</strong> You have up to <strong>6 months</strong> post-flight to claim retroactively via the HighFlyer portal.
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Decision Tree Logic (Goal: Organize/Process) -->
+        <!-- Visual: HTML/CSS Flowchart (NO SVG) -->
+        <section>
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-slate-800">The Eligibility Logic Flow</h3>
+                <p class="text-slate-600">Follow this path to determine if a specific PNR is eligible for credit.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 overflow-x-auto">
+                <div class="flex flex-col items-center min-w-[600px]">
+                    <!-- Step 1 -->
+                    <div class="bg-[#0f172a] text-white px-6 py-3 rounded-lg font-bold shadow-md z-10">Start: Booking (PNR) Exists</div>
+                    
+                    <div class="flow-line-vertical arrow-down"></div>
+
+                    <!-- Step 2 -->
+                    <div class="bg-[#0ea5e9] text-white px-6 py-3 rounded-lg font-bold shadow-md z-10 border-2 border-[#0f172a]">
+                        Was the ticket issued ON or AFTER the date the Company HighFlyer Account was activated?
+                    </div>
+
+                    <!-- Branching -->
+                    <div class="grid grid-cols-2 w-full max-w-2xl mt-4">
+                        <div class="flex flex-Acol items-center">
+                            <div class="text-[#f43f5e] font-bold mb-1">NO</div>
+                            <div class="w-full h-[2px] bg-slate-300"></div>
+                            <div class="flow-line-vertical arrow-down"></div>
+                            <div class="bg-red-50 border-2 border-[#f43f5e] text-[#f43f5e] p-4 rounded-lg text-center w-4/5 font-bold shadow-sm">
+                                NOT ELIGIBLE<br>
+                                <span class="text-xs font-normal text-slate-600">Strict System Limitation. No exceptions.</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-center">
+                            <div class="text-[#10b981] font-bold mb-1">YES</div>
+                            <div class="w-full h-[2px] bg-slate-300"></div>
+                            <div class="flow-line-vertical arrow-down"></div>
+                            <div class="bg-blue-50 border-2 border-[#0ea5e9] text-[#0f172a] px-6 py-3 rounded-lg font-bold text-center w-4/5 shadow-sm">
+                                Has travel occurred yet?
+                            </div>
+                            
+                            <!-- Inner Branch -->
+                            <div class="grid grid-cols-2 w-full mt-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="text-slate-500 text-xs mb-1">NO (Future Flight)</div>
+                                    <div class="flow-line-vertical arrow-down"></div>
+                                    <div class="bg-white border border-slate-200 p-3 rounded shadow-sm text-sm text-center w-11/12">
+                                        <strong>Action:</strong><br>Log in to "Manage Booking" on SQ site -> Add Corporate ID.
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="text-slate-500 text-xs mb-1">YES (Flown)</div>
+                                    <div class="flow-line-vertical arrow-down"></div>
+                                    <div class="bg-white border border-slate-200 p-3 rounded shadow-sm text-sm text-center w-11/12">
+                                        <strong>Action:</strong><br>Log in to HighFlyer Portal -> Claims -> "Retroactive Claim".<br>
+                                        <span class="text-xs text-[#f43f5e]">Must be within 6 months.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Eligibility Breakdown (Goal: Compare) -->
+        <!-- Visual: Bar Chart for Eligible Booking Types -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-slate-800">Booking Source Eligibility</h3>
+                    <p class="text-slate-600">Not all bookings are treated equally. While direct bookings are safest, travel agents and OTAs are eligible <strong>if</strong> data is passed correctly.</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="chart-container">
+                        <canvas id="eligibilityChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-slate-400 text-center italic">
+                        *Codeshare flights must be marketed AND operated by SQ/Scoot or specific partners (Lufthansa/Swiss) depending on specific HighFlyer agreement terms, but generally pure SQ/Scoot metal is required for standard accrual.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-indigo-900 text-white p-6 rounded-xl shadow-lg">
+                    <h4 class="font-bold text-lg mb-2 text-[#0ea5e9]">Critical Data Required</h4>
+                    <p class="text-sm text-slate-300 mb-4">To link a booking, you must have:</p>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center"><span class="mr-2">🔹</span> <strong>Corporate ID:</strong> Usually starts with 'XY' or numbers.</li>
+                        <li class="flex items-center"><span class="mr-2">🔹</span> <strong>Ticket Number:</strong> Must start with <strong>618</strong> (Singapore Airlines) or <strong>668</strong> (Scoot).</li>
+                        <li class="flex items-center"><span class="mr-2">🔹</span> <strong>Flight Number:</strong> SQ or TR codes.</li>
+                        <li class="flex items-center"><span class="mr-2">🔹</span> <strong>Traveller Name:</strong> Must match passport & booking exactly.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm">
+                    <h4 class="font-bold text-lg mb-2">The "OTA" Workaround</h4>
+                    <p class="text-sm text-slate-600">
+                        Bookings made via Expedia, Skyscanner, etc., often fail to capture the Corporate ID during checkout. 
+                        <br><br>
+                        <strong>Fix:</strong> Take the PNR (6-character code) from the OTA confirmation, go to SingaporeAir.com immediately, select "Manage Booking", and enter the Corporate details there <em>before</em> check-in.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Time Limits (Goal: Change/Timeline) -->
+        <!-- Visual: Timeline Chart -->
+        <section>
+            <div class="mb-4">
+                <h3 class="text-2xl font-bold text-slate-800">The Retroactive Window</h3>
+                <p class="text-slate-600">You have a strict window to claim points for flown sectors where the ID was missing.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="chart-container">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer / Disclaimer -->
+        <footer class="border-t border-slate-200 mt-12 pt-8 text-center text-slate-500 text-sm pb-10">
+            <p class="mb-2"><strong>Research Note:</strong> HighFlyer and KrisFlyer are independent. A traveller can earn KrisFlyer miles (personal) AND HighFlyer points (corporate) simultaneously on the same flight.</p>
+            <p>Generated by Canvas Infographics. Palette: Electric Corporate.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- DATA PROCESSING UTILITIES ---
+
+        // Label Wrapping Logic (Mandatory per instructions)
+        function wrapLabel(label, maxLength = 16) {
+            if (label.length <= maxLength) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= maxLength) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // Common Tooltip Configuration (Mandatory per instructions)
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: Eligibility Probability (Bar Chart) ---
+        const ctxEligibility = document.getElementById('eligibilityChart').getContext('2d');
+        const eligibilityLabels = [
+            "Direct Web Booking (SQ/Scoot)", 
+            "Corporate Travel Agent (TMC)", 
+            "Online Travel Agent (OTA)", 
+            "Codeshare (Non-SQ Metal)", 
+            "Group Fares (Class G)", 
+            "Award Tickets (Redemption)"
+        ].map(l => wrapLabel(l));
+
+        new Chart(ctxEligibility, {
+            type: 'bar',
+            data: {
+                labels: eligibilityLabels,
+                datasets: [{
+                    label: 'Eligibility Status (10=Full, 0=None)',
+                    data: [10, 10, 8, 3, 0, 0], // Data representation of eligibility likelihood
+                    backgroundColor: [
+                        '#10b981', // Green (Direct)
+                        '#10b981', // Green (Agent)
+                        '#f59e0b', // Amber (OTA - needs workaround)
+                        '#f43f5e', // Red (Codeshare often excluded)
+                        '#94a3b8', // Grey (Group)
+                        '#94a3b8'  // Grey (Award)
+                    ],
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipOptions,
+                    title: {
+                        display: true,
+                        text: 'Eligibility by Booking Source & Type'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        ticks: {
+                            callback: function(value) {
+                                if(value === 10) return 'Eligible';
+                                if(value === 8) return 'With Manual Entry';
+                                if(value === 3) return 'Restricted';
+                                if(value === 0) return 'Ineligible';
+                                return '';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: Timeline Window (Horizontal Bar / Timeline Visual) ---
+        const ctxTimeline = document.getElementById('timelineChart').getContext('2d');
+        
+        new Chart(ctxTimeline, {
+            type: 'bar',
+            data: {
+                labels: ['Registration Date', 'Ticket Issue Date', 'Travel Date', 'Claim Deadline'],
+                datasets: [{
+                    label: 'Standard Flow',
+                    data: [0, 5, 15, 195], // Days relative to start (roughly)
+                    backgroundColor: '#0ea5e9',
+                    barPercentage: 0.5
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal bar to simulate timeline
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) { return tooltipItems[0].label; },
+                            label: function(context) {
+                                if (context.label === 'Claim Deadline') return '6 Months after Flight';
+                                if (context.label === 'Registration Date') return 'Must correspond to T0';
+                                if (context.label === 'Ticket Issue Date') return 'Must be >= Registration Date';
+                                return '';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: { display: true, text: 'Timeline (Days)' },
+                        ticks: { stepSize: 30 }
+                    }
+                }
+            }
+        });
+
+    </script>
+    
+    <!-- 
+        Research Summary Embedded:
+        1. Primary Q: Can existing bookings be added? -> Yes, IF ticket issued after company reg. No if before.
+        2. Process: Manage Booking (Pre-flight) or Portal Claim (Post-flight).
+        3. Eligibility: OTA ok if ID added. Codeshare strict rules. Award/Group excluded.
+        4. Palette: Electric Corporate (#0f172a, #0ea5e9, #f43f5e).
+        5. No SVG used. No Mermaid used.
+    -->
+</body>
+</html>
